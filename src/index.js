@@ -48,8 +48,8 @@ function column(index, rowLength) {
   return index % rowLength;
 }
 
-function row(step, rowLength) {
-  return (step - column(step, rowLength)) / rowLength;
+function row(index, rowLength) {
+  return (index - column(index, rowLength)) / rowLength;
 }
 
 class Game extends React.Component {
@@ -58,7 +58,7 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-        move: undefined,
+        index: undefined,
       }],
       xIsNext: true,
       stepNumber: 0,
@@ -76,7 +76,7 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([{
         squares: squares,
-        move: i
+        index: i
       }]),
       xIsNext: !this.state.xIsNext,
       stepNumber: history.length,
@@ -96,14 +96,15 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ?
-          'Go to move #' + move + ' at row ' + row(step.move, 3) + ' col ' + column(step.move, 3):
-          'Go to game start';
-      return (
-          <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
-      );
+    const desc = move ?
+        'Go to index #' + move + ' at row ' + row(step.index, 3) + ' col ' + column(step.index, 3):
+        'Go to game start';
+    const fontWeight = move == this.state.stepNumber ? {fontWeight: 'bold'} : {fontWeight: 'normal'}
+    return (
+        <li key={move}>
+          <button style={fontWeight} onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+    );
     });
 
     let status;
