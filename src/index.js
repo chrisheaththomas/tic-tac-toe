@@ -20,29 +20,35 @@ class Board extends React.Component {
     );
   }
 
-  render() {
-    return (
-        <div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
+  renderRow(i){
+    return(
+        <div className="board-row">
+          {this.renderSquare(i)}
+          {this.renderSquare(i+1)}
+          {this.renderSquare(i+2)}
         </div>
     );
   }
 
+  renderSquares() {
+    var squares = [];
+    for (var row = 0; row < 3; row++) {
+      // for (var col = 0; col < 3; col++) {
+        squares.push(this.renderRow(row*3));
+      // }
+    }
+    return squares;
+  }
+
+  render() {
+    return (
+        <div>
+          {this.renderSquares()}
+        </div>
+    );
+  }
 }
+
 
 function column(index, rowLength) {
   return index % rowLength;
@@ -64,6 +70,7 @@ class Game extends React.Component {
       stepNumber: 0,
     };
   }
+
 
   handleMoveClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
@@ -90,6 +97,8 @@ class Game extends React.Component {
     });
   }
 
+
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -99,7 +108,7 @@ class Game extends React.Component {
     const desc = move ?
         'Go to index #' + move + ' at row ' + row(step.index, 3) + ' col ' + column(step.index, 3):
         'Go to game start';
-    const fontWeight = move == this.state.stepNumber ? {fontWeight: 'bold'} : {fontWeight: 'normal'}
+    const fontWeight = move === this.state.stepNumber ? {fontWeight: 'bold'} : {fontWeight: 'normal'}
     return (
         <li key={move}>
           <button style={fontWeight} onClick={() => this.jumpTo(move)}>{desc}</button>
