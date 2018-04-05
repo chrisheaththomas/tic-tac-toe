@@ -33,16 +33,16 @@ class Board extends React.Component {
 
   renderRowOfSquares(row) {
 
-    var squares = [];
-    for (var col = 0; col < Board.boardLength(); col++) {
+    let squares = [];
+    for (let col = 0; col < Board.boardLength(); col++) {
       squares.push(this.renderSquare(row * Board.boardLength() + col));
     }
     return squares;
   }
 
   renderSquares() {
-    var squares = [];
-    for (var row = 0; row < Board.boardLength(); row++) {
+    let squares = [];
+    for (let row = 0; row < Board.boardLength(); row++) {
       squares.push(this.renderRow(row));
     }
     return squares;
@@ -87,7 +87,7 @@ class Game extends React.Component {
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
-    }
+    } //TODO set winner state
     squares[i] = this.state.xIsNext ? 'X' : 'O';
 
     function unshift() {
@@ -95,7 +95,7 @@ class Game extends React.Component {
         squares: squares,
         index: i,
         move: history.length
-      })
+      });
       return history;
     }
 
@@ -139,6 +139,7 @@ class Game extends React.Component {
                 squares={current.squares}
                 onClick={(i) => this.handleMoveClick(i)}
             />
+            {/*TODO pass winning state down to board to render*/}
           </div>
           <div className="game-info">
             <button onClick={this.reverse}>Reverse</button>
@@ -154,7 +155,7 @@ class Game extends React.Component {
       const desc = step.move ? 'Go to move #' + step.move + ' at row ' + row(
           step.index, 3) + ' col ' + column(step.index, 3) : 'Go to game start';
       const fontWeight = step.move === this.state.stepNumber
-          ? {fontWeight: 'bold'} : {fontWeight: 'normal'}
+          ? {fontWeight: 'bold'} : {fontWeight: 'normal'};
       return (
           <li key={index}>
             <button style={fontWeight}
@@ -168,8 +169,7 @@ class Game extends React.Component {
     const index = history.findIndex((period) => {
       return period.move === this.state.stepNumber;
     });
-    const current = index !== -1 ? history[index] : history[0];
-    return current;
+    return index !== -1 ? history[index] : history[0];
   }
 
   reverse() {
