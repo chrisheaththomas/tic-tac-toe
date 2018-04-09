@@ -4,7 +4,7 @@ import './index.css';
 
 function Square(props) {
   return (
-      <button className="square" onClick={props.onClick}>
+      <button className="square" onClick={props.onClick} style={props.style}>
         {props.value}
       </button>
   );
@@ -17,9 +17,12 @@ class Board extends React.Component {
   }
 
   renderSquare(i) {
+    const style = this.props.winner && this.props.winner.includes(i)
+        ? {color: '#ff5e4a'} : {};
     return (
         <Square value={this.props.squares[i]}
-                onClick={() => this.props.onClick(i)}/>
+                onClick={() => this.props.onClick(i)}
+                style={style}/>
     );
   }
 
@@ -87,7 +90,7 @@ class Game extends React.Component {
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
-    } //TODO set winner state
+    }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
 
     function unshift() {
@@ -107,7 +110,7 @@ class Game extends React.Component {
             move: history.length
           }]),
       xIsNext: !this.state.xIsNext,
-      stepNumber: this.state.isReversed? history.length -1 : history.length,
+      stepNumber: this.state.isReversed ? history.length - 1 : history.length,
     });
   }
 
@@ -127,7 +130,7 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = 'Winner: ' + winner.winner;
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -138,8 +141,8 @@ class Game extends React.Component {
             <Board
                 squares={current.squares}
                 onClick={(i) => this.handleMoveClick(i)}
+                winner={winner && winner.line}
             />
-            {/*TODO pass winning state down to board to render*/}
           </div>
           <div className="game-info">
             <button onClick={this.reverse}>Reverse</button>
@@ -195,7 +198,7 @@ function calculateWinner(squares) {
     const [a, b, c] = lines[i];
     if (squares && squares[a] && squares[a] === squares[b] && squares[a]
         === squares[c]) {
-      return squares[a];
+      return {winner: squares[a], line: lines[i]};
     }
   }
   return null;
