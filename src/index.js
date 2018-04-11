@@ -1,6 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
+import * as ReactDOM from "react-dom";
+import {isDraw} from "./utilities";
 
 function Square(props) {
   return (
@@ -88,10 +89,11 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = this.current(history);
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    const nextPlayer = this.state.xIsNext ? 'X' : 'O';
+    if (calculateWinner(squares) || squares[i] || isDraw(squares, nextPlayer)) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[i] = nextPlayer;
 
     function unshift() {
       history.unshift({
@@ -129,10 +131,14 @@ class Game extends React.Component {
     const moves = this.moves(history);
 
     let status;
+    const nextPlayer = this.state.xIsNext ? 'X' : 'O';
     if (winner) {
       status = 'Winner: ' + winner.winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    } else if(isDraw(current.squares, nextPlayer)){
+      status = 'Game is a draw'
+    }
+    else {
+      status = 'Next player: ' + (nextPlayer);
     }
 
     return (
@@ -203,6 +209,9 @@ function calculateWinner(squares) {
   }
   return null;
 }
+
+
+
 
 // ========================================
 
