@@ -23,7 +23,7 @@ export function isDraw(squares, nextPlayer) {
 
   let nullFilter = (s) => {
     return s === null
-  }
+  };
 
   function isDrawItr(squares, nextPlayer) {
     if (calculateWinner(squares)) {
